@@ -1,0 +1,21 @@
+<template>
+  <router-view />
+</template>
+
+<script setup lang="ts">
+import Layout from './components/Layout.vue'
+</script>
+
+<style scoped></style>
+
+<!-- <template lang="">
+    <div>
+        
+    </div>
+</template>
+<script setup="ts">
+
+</script>
+<style lang="">
+    
+</style> -->
