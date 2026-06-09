@@ -36,7 +36,13 @@
 import { ref, reactive } from 'vue'
 import { Back } from '@element-plus/icons-vue'
 import { login } from '@/api/admin'
+import { useRouter } from 'vue-router'
 const loginForm = ref()
+
+//登陆
+
+// 创建一个router实例
+const router = useRouter()
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -47,9 +53,16 @@ const submitForm = async (formEl) => {
         if (!data.token) {
           return console.error('登录失败')
         }
-        //将token存储到localStorage中
+        //登陆成功，将token存储到localStorage中，保存token和用户信息
         localStorage.setItem('token', data.token)
         localStorage.setItem('userInfo', JSON.stringify(data.userInfo))
+        //根据用户角色来决定的跳转页面
+        //后台人员admin data.userInfo.userType === 2
+        if (data.userInfo.userType === 2) {
+          router.push('/back/dashboard')
+        } else {
+          //用户登陆，等待改进
+        }
       })
     }
   })
