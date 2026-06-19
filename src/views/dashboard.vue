@@ -6,8 +6,10 @@
       </template>
     </PageHead>
     <TableSearch :formItems="formItems" @search="handleSearch" />
+    <!-- :data="tableData" 里面的数据，来源于下面125行  tableData.value = records-->
     <el-table :data="tableData" style="width: 100%; margin-top: 25px">
       <el-table-column label="文章标题" width="200" fixed="left">
+        <!-- scope 是 Element Plus 的表格组件在底层遍历你传入的 data 时，把当前行的数据（row）主动传给你的。 -->
         <template #default="scope">
           <div style="display: flex; align-items: center">
             <el-icon><Timer /></el-icon>
@@ -23,6 +25,7 @@
           </div>
         </template>
       </el-table-column>
+      <!-- 请从数据源中找到名为 authorName 的字段 -->
       <el-table-column prop="authorName" label="作者" width="150"> </el-table-column>
       <el-table-column prop="readCount" label="阅读量" width="150"> </el-table-column>
       <el-table-column prop="updatedAt" label="发布时间" width="200"> </el-table-column>
@@ -46,7 +49,7 @@
       @change="handlePageChange"
       style="margin-top: 20px; display: flex; justify-content: left"
     />
-    <AddDialogs v-model:modelValue="dialogVisible" />
+    <AddDialogs v-model:modelValue="dialogVisible" :categories="categories" />
   </div>
 </template>
 <script setup="ts">
@@ -57,13 +60,21 @@ import { categoryOption, articleList } from '@/api/admin'
 import { Timer } from '@element-plus/icons-vue'
 import AddDialogs from '@/components/AddDialogs.vue'
 
-const formItems = [
+const formItems = ref([
   { comp: 'input', prop: 'title', label: '文章标题', placeholder: '请输入文章标题' },
   {
     comp: 'select',
     prop: 'categoryId',
     label: '分类',
     placeholder: '请选择分类',
+    //数据从后端定义拿去随时可变，不能在前端随便定义
+    // options: [
+    //   { label: '全部', value: 0 },
+    //   { label: '人际关系', value: 4 },
+    //   { label: '心理健康基础', value: 1 },
+    //   { label: '压力缓解', value: 3 },
+    //   { label: '情绪管理', value: 2 },
+    // ],
   },
   {
     comp: 'select',
@@ -77,7 +88,7 @@ const formItems = [
       { label: '已删除', value: 3 },
     ],
   },
-]
+])
 
 //定义一个tableData的响应式对象，用于存储表格数据
 const tableData = ref([])
@@ -126,8 +137,11 @@ onMounted(async () => {
   const data = await categoryOption()
   //map一个新的数组，返回label和value
 
+  //这里 data 来自 categoryOption()，每个 item 形如 { id: 1, categoryName: '人际关系' }
   categories.value = data.map((item) => {
     categoryMaps[item.id] = item.categoryName
+    //接口中原本返回的数据格式是{ id: 1, categoryName: '人际关系' }，我们需要将这个对象映射成一个新的对象，key是item.id，value是item.categoryName
+    //存到categoryMaps中
 
     //映射成一个新的对象，key是item.id，value是item.categoryName
     //将item.id作为一个key，item.categoryName作为value存储到categoryMaps中
@@ -136,7 +150,17 @@ onMounted(async () => {
       value: item.id,
     }
   })
-  formItems[1].options = categories.value
+  // formItems[1].options = categories.value
+  //原来这里是直接赋值，但是categories.value是一个ref对象，所以需要用.value来获取值
+  formItems.value[1].options = categories.value
+
+  // 输入： data，每项形如 { id: 1, categoryName: '人际关系' }（来自 categoryOption()）。
+  // 遍历与映射： 对 data.map(item => { ... }) 的每个 item：
+  // 先做 categoryMaps[item.id] = item.categoryName，把 id 映射到名称（便于表格中用 categoryMaps[id] 快速显示名称）。
+  // 返回 { label: item.categoryName, value: item.id }，这是 Element Plus el-option 期望的选项格式。
+  // 赋值结果： categories.value 变为 [{ label: '人际关系', value: 1 }, ...]，可直接作为 el-select 的 options。同时 categoryMaps 成为 { 1: '人际关系', ... }。
+  // 用途： formItems.value[1].options = categories.value 用于筛选下拉，<AddDialogs :categories="categories" /> 用于新增/编辑弹窗的下拉。
+  // 注意事项： 保持 value 的类型一致（数字或字符串），并可在映射后插入 { label: '全部', value: 0 } 以提供“全部”选项，避免短时显示 “No data”。
 
   //调用方法获取文章列表数据
   handleSearch()

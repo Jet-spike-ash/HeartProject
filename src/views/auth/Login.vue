@@ -37,35 +37,84 @@ import { ref, reactive } from 'vue'
 import { Back } from '@element-plus/icons-vue'
 import { login } from '@/api/admin'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 const loginForm = ref()
 
 //登陆
 
 // 创建一个router实例
 const router = useRouter()
+// 表单验证
+// Vue 在渲染时，会把 <el-form> 组件的实例赋值给 formRef 这个变量。
+// const submitForm = async (formEl) => {
+//   //判断表单是否存在
+//   if (!formEl) return
+//   // 下为了检查rules中的验证规则是否都通过，如果通过则返回true，否则返回false
+//   await formEl.validate((valid) => {
+//     // 回调函数默认直接执行了，没有等login传入数据就直接开始执行下一步，所以需要用async await来等待login传入数据
+//     if (valid) {
+//       // login(formData) 调用 API
+//       login(formData).then((data) => {
+//         //判断token是否存在
+//         if (!data.token) {
+//           return console.error('登录失败')
+//         }
+//         //登陆成功，将token存储到localStorage中，保存token和用户信息
+//         localStorage.setItem('token', data.token)
+//         localStorage.setItem('userInfo', JSON.stringify(data.userInfo))
+//         //根据用户角色来决定的跳转页面
+//         //后台人员admin data.userInfo.userType === 2
+//         if (data.userInfo.userType === 2) {
+//           router.push('/back/dashboard')
+//         } else {
+//           //用户登陆，等待改进
+//         }
+//       })
+//     }
+//   })
+// }
 
 const submitForm = async (formEl) => {
+  // 1. 判断表单实例是否存在
   if (!formEl) return
-  await formEl.validate((valid) => {
-    if (valid) {
-      login(formData).then((data) => {
-        //判断token是否存在
-        if (!data.token) {
-          return console.error('登录失败')
-        }
-        //登陆成功，将token存储到localStorage中，保存token和用户信息
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('userInfo', JSON.stringify(data.userInfo))
-        //根据用户角色来决定的跳转页面
-        //后台人员admin data.userInfo.userType === 2
-        if (data.userInfo.userType === 2) {
-          router.push('/back/dashboard')
-        } else {
-          //用户登陆，等待改进
-        }
-      })
+
+  try {
+    // 2. 纯 Promise 写法验证表单。如果不通过，会直接抛出异常进入 catch，不会往下走
+    await formEl.validate()
+
+    // 3. 表单验证通过，发起登录请求
+    const data = await login(formData)
+
+    // 4. 判断业务逻辑是否成功（是否返回 token）
+    if (!data.token) {
+      // 登录失败，给用户弹窗提示，并阻断后续代码执行
+      ElMessage.error(data.message || '登录失败，请检查账号密码')
+      return
     }
-  })
+
+    // 5. 登录成功，存储信息
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('userInfo', JSON.stringify(data.userInfo))
+
+    // 6. 根据角色跳转
+    ElMessage.success('登录成功') // 给个成功提示体验更好
+    if (data.userInfo.userType === 2) {
+      router.push('/back/dashboard')
+    } else {
+      // 普通用户跳转逻辑，等待改进
+      router.push('/')
+    }
+  } catch (error) {
+    // 统一错误处理区
+    // 如果是表单验证失败，error 是 false 或者包含验证字段的信息
+    if (error === false) {
+      ElMessage.warning('请完善表单信息')
+    } else {
+      // 如果是 API 请求失败（网络错误、服务器 500 等）
+      console.error('请求出错:', error)
+      ElMessage.error(error.message || '网络异常，请稍后重试')
+    }
+  }
 }
 
 const formData = reactive({
