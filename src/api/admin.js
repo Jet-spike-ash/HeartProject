@@ -16,13 +16,13 @@ export function articleList(params) {
 }
 
 //获取文件信息
-export function fileInfo(file, bussinessInfo) {
+export function fileInfo(file, businessInfo) {
   // 创建一个 FormData 实例，并将文件信息放入
   const formData = new FormData()
   formData.append('file', file)
   // 与调用处保持字段名一致（bussinessId）
-  formData.append('bussinessType', 'ARTICLE')
-  formData.append('bussinessId', bussinessInfo.bussinessId)
+  formData.append('businessType', 'ARTICLE')
+  formData.append('businessId', businessInfo.businessId)
   formData.append('businessField', 'cover')
   // 让浏览器/axios 自动设置 Content-Type（包括 boundary）
   return service.post('/file/upload', formData)
