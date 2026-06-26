@@ -1,3 +1,4 @@
+<!-- 登录/注册布局（左品牌区 + 右表单区） -->
 <template>
   <div class="auth-layout">
     <div class="left-section">

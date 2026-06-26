@@ -1,3 +1,5 @@
+// 路由配置（两大布局 + 重定向）
+
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from '@/components/Layout.vue'
 import AuthLayout from '@/components/AuthLayout.vue'
@@ -46,7 +48,7 @@ const router = createRouter({
     },
     {
       path: '/',
-      redirect: '/back/dashboard', // 添加这一行
+      redirect: '/back/dashboard', // 添加这一行，直接导向dsahboard
     },
     {
       path: '/auth',

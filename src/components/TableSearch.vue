@@ -1,5 +1,5 @@
-//仔细阅读这个代码，重复性很强，可以抽象成一个组件，减少重复代码
-
+<!-- 仔细阅读这个代码，重复性很强，可以抽象成一个组件，减少重复代码 -->
+<!-- 通用搜索表单（动态渲染 input/select） -->
 <template lang="">
   <!-- 在 <script> 中通过 const formFormRef = ref() 声明。Vue 挂载时，会自动将 <el-form> 的组件实例赋值给它。 -->
   <el-form ref="formFormRef" :model="formData">

@@ -1,3 +1,4 @@
+<!-- 知识文章页（占位） -->
 <template lang="">
   <div>
     <PageHead title="知识文章">

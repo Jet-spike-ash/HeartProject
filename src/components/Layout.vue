@@ -1,3 +1,4 @@
+<!--  后台主布局（左侧导航 + 顶部栏 + 内容区） -->
 <template>
   <div class="background-layout">
     <el-container style="height: 100vh">

@@ -1,3 +1,5 @@
+<!-- 左侧导航菜单（动态路由渲染 + 折叠） -->
+<!-- 侧边栏展示情况，isAdmin从路由admin.ts中定义 -->
 <template lang="">
   <el-aside width="isAdmin ? '64px' : '264px'" height="100%">
     <el-col style="height: 100%">

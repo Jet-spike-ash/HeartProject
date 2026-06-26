@@ -1,3 +1,4 @@
+<!-- 顶部栏（折叠按钮 + 用户下拉菜单） -->
 <template lang="">
   <div class="navbar">
     <div class="flex-box">

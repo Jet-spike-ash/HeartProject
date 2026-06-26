@@ -1,3 +1,4 @@
+<!-- 页面标题栏（标题 + 具名插槽按钮区） -->
 <template lang="">
   <div class="page-head">
     <div class="page-head-title">{{ props.title }}</div>

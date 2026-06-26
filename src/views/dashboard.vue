@@ -1,3 +1,4 @@
+<!-- 数据分析页（文章表格 + 搜索 + 分页 + 弹窗） -->
 <template lang="">
   <div>
     <PageHead title="数据分析">

@@ -1,3 +1,4 @@
+<!-- 情绪日志页 -->
 <template lang="">
   <div>
     <PageHead title="情绪日志">

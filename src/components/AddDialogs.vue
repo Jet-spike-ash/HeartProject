@@ -1,3 +1,5 @@
+<!-- 新增/编辑文章弹窗（表单 + 封面上传 + 简易编辑器） -->
+
 <template>
   <!--
     数据流第 1 步：父组件 dashboard.vue 用 <AddDialogs v-model:modelValue="dialogVisible" /> 控制弹窗显示。

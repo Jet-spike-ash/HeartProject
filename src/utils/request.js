@@ -1,3 +1,4 @@
+// Axios 封装：baseURL、拦截器、token 注入、错误处理
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 // 创建实例
